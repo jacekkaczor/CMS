@@ -24,6 +24,10 @@ body {
   margin-top: 64px;   
 }
 
+.app-container {
+  min-height: 100vh !important;
+}
+
 /* Login.js */
 .login-container {
   max-width: 420px;
@@ -43,7 +47,7 @@ body {
   margin-top: 50px;
   padding: 40px;
   border: 1px solid #c8c8c8; 
-  text-align: center;   
+  text-align: center;
 }
 
 .page-not-found .title {
