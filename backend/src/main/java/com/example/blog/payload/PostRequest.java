@@ -4,6 +4,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class PostRequest {
+    private long id;
+
     @NotBlank
     @Size(max = 140)
     private String title;
@@ -25,5 +27,13 @@ public class PostRequest {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

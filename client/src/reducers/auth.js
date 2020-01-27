@@ -12,7 +12,7 @@ const reducer = (state = initialState, action) => {
         case SET_USER:
             return {
             ...state,
-            isAuth: action.user === undefined,
+            isAuth: action.user !== undefined,
             user: action.user
             }
         default:

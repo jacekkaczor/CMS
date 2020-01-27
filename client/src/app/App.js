@@ -6,6 +6,10 @@ import Login from '../components/Login';
 import AppHeader from '../components/AppHeader';
 import NotFound from '../components/NotFound';
 import LoadingIndicator from '../components/LoadingIndicator';
+import PostList from '../components/PostList';
+import NewPost from '../components/NewPost';
+import PrivateRoute from '../components/PrivateRoute';
+import Post from '../components/Post';
 import { loadCurrentUser } from '../util/AppUtils';
 
 import { Layout } from 'antd';
@@ -26,7 +30,11 @@ class App extends Component {
                 <Content className="app-content">
                     <div className="container">
                         <Switch>
+                            <Route exact path="/" render={(props) => <PostList {...props} />} />
                             <Route path="/login" render={(props) => <Login {...props} />}/>
+                            <Route path="/posts/:id" render={(props) => <Post {...props} />}/>
+                            <PrivateRoute path="/post/new" ComponentToRender={NewPost}/>
+                            
                             <Route component={NotFound}/>
                         </Switch>
                     </div>

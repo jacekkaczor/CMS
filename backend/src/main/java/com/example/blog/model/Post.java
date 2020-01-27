@@ -19,6 +19,7 @@ public class Post extends UserDateAudit {
     private String title;
 
     @NotBlank
+    @Column(length = 5000)
     private String body;
 
     public Long getId() {

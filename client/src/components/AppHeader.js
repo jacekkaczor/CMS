@@ -3,14 +3,17 @@ import { Link, withRouter } from 'react-router-dom';
 import ProfileDropdownMenu from './ProfileDropdownMenu';
 import  { handleLogout } from '../util/AppUtils';
 import { connect } from "react-redux";
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Input } from 'antd';
 import { APP_NAME } from '../constants';
+import { setSearch } from '../actions/posts';
 const Header = Layout.Header;
+const { Search } = Input;
     
 class AppHeader extends Component {
     constructor(props) {
         super(props);   
-        this.handleMenuClick = this.handleMenuClick.bind(this);   
+        this.handleMenuClick = this.handleMenuClick.bind(this);  
+        this.handleSearchClick = this.handleSearchClick.bind(this);
     }
 
     handleMenuClick({ key }) {
@@ -19,13 +22,33 @@ class AppHeader extends Component {
         }
     }
 
+    handleSearchClick(searchText) {
+        this.props.dispatch(setSearch(searchText));
+        this.props.history.push("/");
+    }
+
     render() {
         let menuItems;
+        const search = (
+            <Search
+                placeholder="Input search title"
+                onSearch={this.handleSearchClick}
+                style={{ width: 200 }}
+            />
+        );
         if(this.props.user) {
             menuItems = [
+                <Menu.Item key="search">
+                    {search}
+                </Menu.Item>,
                 <Menu.Item key="/">
                     <Link to="/">
                         <Icon type="home" className="nav-icon" />
+                    </Link>
+                </Menu.Item>,
+                <Menu.Item key="/post/new">
+                    <Link to="/post/new">
+                        New
                     </Link>
                 </Menu.Item>,
                 <Menu.Item key="/profile" className="profile-menu">
@@ -36,6 +59,9 @@ class AppHeader extends Component {
             ]; 
         } else {
             menuItems = [
+                <Menu.Item key="search">
+                    {search}
+                </Menu.Item>,
                 <Menu.Item key="/">
                     <Link to="/">
                         <Icon type="home" className="nav-icon" />

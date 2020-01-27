@@ -15,6 +15,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findByCreatedBy(Long userId, Pageable pageable);
 
+    Page<Post> findByTitleContaining(String search, Pageable pageable);
+
     long countByCreatedBy(Long userId);
 
     List<Post> findByIdIn(List<Long> postIds);

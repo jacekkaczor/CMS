@@ -32,12 +32,17 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
-    public PagedResponse<PostResponse> getAllPosts(UserPrincipal currentUser, int page, int size) {
+    public PagedResponse<PostResponse> getAllPosts(int page, int size, String search) {
         validatePageNumberAndSize(page, size);
 
         // Retrieve Posts
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Post> posts = postRepository.findAll(pageable);
+        Page<Post> posts;
+        if(search != "") {
+            posts = postRepository.findByTitleContaining(search, pageable);
+        } else {
+            posts = postRepository.findAll(pageable);
+        }
 
         if(posts.getNumberOfElements() == 0) {
             return new PagedResponse<>(Collections.emptyList(), posts.getNumber(),
@@ -88,7 +93,16 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public PostResponse getPostById(Long postId, UserPrincipal currentUser) {
+    public Post updatePost(PostRequest postRequest) {
+        Post post = postRepository.findById(postRequest.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Post", "id", postRequest.getId()));
+        post.setTitle(postRequest.getTitle());
+        post.setBody(postRequest.getBody());
+        
+        return postRepository.save(post);
+    }
+
+    public PostResponse getPostById(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new ResourceNotFoundException("Post", "id", postId));
 
@@ -97,6 +111,15 @@ public class PostService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", post.getCreatedBy()));
 
         return ModelMapper.mapPostToPostResponse(post, creator);
+    }
+
+    public Boolean deletePostById(Long postId) { 
+        try {
+            postRepository.deleteById(postId);
+        } catch( Exception e) {
+            return false;
+        }
+        return true;
     }
 
     private void validatePageNumberAndSize(int page, int size) {

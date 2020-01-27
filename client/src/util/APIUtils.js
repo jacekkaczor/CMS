@@ -1,4 +1,4 @@
-import { API_BASE_URL, ACCESS_TOKEN } from '../constants';
+import { API_BASE_URL, ACCESS_TOKEN, POST_LIST_SIZE } from '../constants';
 
 const request = (options) => {
     const headers = new Headers({
@@ -38,6 +38,34 @@ export function getCurrentUser() {
 
     return request({
         url: API_BASE_URL + "/user/me",
+        method: 'GET'
+    });
+}
+
+export function getAllPosts(searchText, page, size) {
+    page = page || 0;
+    size = size || POST_LIST_SIZE;
+    let search = "";
+    if (searchText) search = "&search=" + searchText;
+    return request({
+        url: API_BASE_URL + "/posts?page=" + page + "&size=" + size + search,
+        method: 'GET'
+    });
+}
+
+export function createPost(postData) {
+    console.log(JSON.stringify(postData));
+    return request({
+        url: API_BASE_URL + "/posts",
+        method: 'POST',
+        body: JSON.stringify(postData)
+    });
+}
+
+
+export function getPost(postId) {
+    return request({
+        url: API_BASE_URL + "/posts/" + postId,
         method: 'GET'
     });
 }
