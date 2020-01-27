@@ -54,10 +54,17 @@ export function getAllPosts(searchText, page, size) {
 }
 
 export function createPost(postData) {
-    console.log(JSON.stringify(postData));
     return request({
         url: API_BASE_URL + "/posts",
         method: 'POST',
+        body: JSON.stringify(postData)
+    });
+}
+
+export function updatePost(postData) {
+    return request({
+        url: API_BASE_URL + "/posts",
+        method: 'PUT',
         body: JSON.stringify(postData)
     });
 }
@@ -67,5 +74,12 @@ export function getPost(postId) {
     return request({
         url: API_BASE_URL + "/posts/" + postId,
         method: 'GET'
+    });
+}
+
+export function deletePost(postId) {
+    return request({
+        url: API_BASE_URL + "/posts/" + postId,
+        method: 'DELETE'
     });
 }

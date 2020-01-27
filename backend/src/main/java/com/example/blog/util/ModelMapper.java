@@ -13,6 +13,7 @@ public class ModelMapper {
         PostResponse.setTitle(post.getTitle());
         PostResponse.setBody(post.getBody());
         PostResponse.setCreationDateTime(post.getCreatedAt());
+        PostResponse.setUpdatedDateTime(post.getUpdatedAt());
         UserSummary creatorSummary = new UserSummary(creator.getId(), creator.getUsername(), creator.getName());
         PostResponse.setCreatedBy(creatorSummary);
 

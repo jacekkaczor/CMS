@@ -32,6 +32,7 @@ class App extends Component {
                         <Switch>
                             <Route exact path="/" render={(props) => <PostList {...props} />} />
                             <Route path="/login" render={(props) => <Login {...props} />}/>
+                            <Route path="/posts/edit/:id" render={(props) => <NewPost {...props} />}/>
                             <Route path="/posts/:id" render={(props) => <Post {...props} />}/>
                             <PrivateRoute path="/post/new" ComponentToRender={NewPost}/>
                             

@@ -8,6 +8,7 @@ public class PostResponse {
     private String body;
     private UserSummary createdBy;
     private Instant creationDateTime;
+    private Instant updatedDateTime;
 
     public Long getId() {
         return id;
@@ -47,5 +48,13 @@ public class PostResponse {
 
     public void setCreationDateTime(Instant creationDateTime) {
         this.creationDateTime = creationDateTime;
+    }
+
+    public Instant getUpdatedDateTime() {
+        return updatedDateTime;
+    }
+
+    public void setUpdatedDateTime(Instant updatedDateTime) {
+        this.updatedDateTime = updatedDateTime;
     }
 }

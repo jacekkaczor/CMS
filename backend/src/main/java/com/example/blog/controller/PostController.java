@@ -47,11 +47,12 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deletePostById(@PathVariable Long postId) {
-        if(postService.deletePostById(postId)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{postId}")
+                .buildAndExpand(postId).toUri();
+
+        return ResponseEntity.created(location)
+            .body(new ApiResponse(postService.deletePostById(postId), "Post Created Successfully", postId));
     }
 
     @PutMapping
