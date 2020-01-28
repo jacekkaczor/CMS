@@ -7,6 +7,7 @@ public class PostResponse {
     private String title;
     private String body;
     private UserSummary createdBy;
+    private boolean accepted;
     private Instant creationDateTime;
     private Instant updatedDateTime;
 
@@ -56,5 +57,13 @@ public class PostResponse {
 
     public void setUpdatedDateTime(Instant updatedDateTime) {
         this.updatedDateTime = updatedDateTime;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 }

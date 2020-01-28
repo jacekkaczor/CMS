@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getAllPosts } from '../util/APIUtils';
+import { getAllPosts, getUserAllPosts } from '../util/APIUtils';
 import Post from './Post';
 import { Button, Icon } from 'antd';
 import { POST_LIST_SIZE } from '../constants';
@@ -17,10 +17,19 @@ class PostList extends Component {
         };
         this.loadPostList = this.loadPostList.bind(this);
         this.handleLoadMore = this.handleLoadMore.bind(this);
+        if (this.props.match.url.includes("waiting")) {
+            if (this.props.user ? !this.props.user.admin : true)
+                this.props.history.push("/");
+        }
     }
 
     loadPostList(searchText, page = 0, size = POST_LIST_SIZE) {
-        let promise = getAllPosts(searchText, page, size);
+        let promise;
+        if(this.props.username) {
+            promise = getUserAllPosts(this.props.username, page, size, true);
+        } else {
+            promise = getAllPosts(searchText, page, size, !this.props.match.url.includes("waiting"));
+        }
         if(!promise) {
             return;
         }
@@ -30,7 +39,7 @@ class PostList extends Component {
 
         promise.then(response => {
             let posts = this.props.posts.slice();
-            if (this.props.page !== response.page) {
+            if (this.props.page < response.page) {
                 posts = posts.concat(response.content);
             } else {
                 posts = response.content;
@@ -65,6 +74,8 @@ class PostList extends Component {
 
     componentDidUpdate(nextProps) {
         if(this.props.searchText !== nextProps.searchText)
+            this.loadPostList(this.props.searchText);
+        if(this.props.match.url !== nextProps.match.url)
             this.loadPostList(this.props.searchText);
     }
 

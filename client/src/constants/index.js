@@ -2,7 +2,7 @@ export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localh
 export const ACCESS_TOKEN = 'accessToken';
 
 export const APP_NAME = 'MyBlog.com';
-export const POST_LIST_SIZE = 30;
+export const POST_LIST_SIZE = 5;
 
 export const POST_TITLE_MAX_LENGTH = 140;
 

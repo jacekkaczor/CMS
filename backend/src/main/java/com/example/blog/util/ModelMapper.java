@@ -8,15 +8,16 @@ import com.example.blog.payload.UserSummary;
 public class ModelMapper {
 
     public static PostResponse mapPostToPostResponse(Post post, User creator) {
-        PostResponse PostResponse = new PostResponse();
-        PostResponse.setId(post.getId());
-        PostResponse.setTitle(post.getTitle());
-        PostResponse.setBody(post.getBody());
-        PostResponse.setCreationDateTime(post.getCreatedAt());
-        PostResponse.setUpdatedDateTime(post.getUpdatedAt());
+        PostResponse postResponse = new PostResponse();
+        postResponse.setId(post.getId());
+        postResponse.setTitle(post.getTitle());
+        postResponse.setBody(post.getBody());
+        postResponse.setCreationDateTime(post.getCreatedAt());
+        postResponse.setUpdatedDateTime(post.getUpdatedAt());
+        postResponse.setAccepted(post.isAccepted());
         UserSummary creatorSummary = new UserSummary(creator.getId(), creator.getUsername(), creator.getName());
-        PostResponse.setCreatedBy(creatorSummary);
+        postResponse.setCreatedBy(creatorSummary);
 
-        return PostResponse;
+        return postResponse;
     }
 }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Avatar } from 'antd';
+import { Avatar, Alert } from 'antd';
 import { Link } from 'react-router-dom';
 import { getAvatarColor } from '../util/Colors';
-import { getPost, deletePost } from '../util/APIUtils';
+import { getPost, deletePost, acceptPost } from '../util/APIUtils';
 import { APP_NAME } from '../constants';
 import NotFound from './NotFound';
 import LoadingIndicator from './LoadingIndicator';
@@ -25,6 +25,7 @@ class Post extends Component {
         this.onDeleteButtonPress = this.onDeleteButtonPress.bind(this);
         this.onEditButtonPress = this.onEditButtonPress.bind(this);
         this.showConfirmDelete = this.showConfirmDelete.bind(this);
+        this.onAcceptButtonPress = this.onAcceptButtonPress.bind(this);
     }
 
     loadPost(postId) {
@@ -58,8 +59,20 @@ class Post extends Component {
     }
 
     onEditButtonPress() {
-        const { post } = this.state.feed ? this.props : this.state;
-        this.props.history.push("/posts/edit/" + post.id, post);
+        const { post } = this.state;
+        this.props.history.push("/post/edit/" + post.id, post);
+    }
+
+    onAcceptButtonPress() {
+        let { post } = this.state;
+        acceptPost(post.id).then(response => {
+            console.log(response)
+            this.loadPost(response.id);
+            notification.success({
+                message: APP_NAME,
+                description: "Post has been accepted",
+            });
+        });        
     }
 
     showConfirmDelete() {
@@ -77,7 +90,7 @@ class Post extends Component {
     }
 
     onDeleteButtonPress() {
-        const { post } = this.state.feed ? this.props : this.state;
+        const { post } = this.state;
         deletePost(post.id)
         .then(response => {
             notification.success({
@@ -101,7 +114,8 @@ class Post extends Component {
             this.loadPost(postId);
         } else {
             this.setState({
-                isLoading: false
+                isLoading: false,
+                post: this.props.post
             })
         }
     }
@@ -129,7 +143,7 @@ class Post extends Component {
             return <ServerError />;
         }
         const { feed } = this.state;
-        const { post } = feed ? this.props : this.state;
+        const { post } = this.state;
         const { user } = this.props;
         let bodyText = post.body;
         if (feed && post.body.length > 255 ) {
@@ -142,7 +156,7 @@ class Post extends Component {
             <div className={feed ? "post-content-feed" : "post-content"}>
                 <div className="post-header">
                     <div className="post-creator-info">
-                        <Link className="creator-link" to={`/posts/${post.createdBy.username}`}>
+                        <Link className="creator-link" to={`/users/${post.createdBy.username}`}>
                             <Avatar className="post-creator-avatar" 
                                 style={{ backgroundColor: getAvatarColor(post.createdBy.name)}} >
                                 {post.createdBy.name[0].toUpperCase()}
@@ -163,12 +177,22 @@ class Post extends Component {
                                 </span> : null}
                             </div>
                         </Link>
-                        {!feed && !!user ?            
+                        {(!feed && user ? user.username === post.createdBy.username : false) || (!feed && user ? user.admin : false) ?            
                         <div className="post-admin" align="right">
-                            <Button type="primary" shape="round" icon="edit" onClick={this.onEditButtonPress}>Edit</Button>
-                            <Button type="danger" shape="round" icon="delete" onClick={this.showConfirmDelete}>Delete</Button>
+                            { (user.admin && !post.accepted) ? 
+                                <Button type="primary" shape="round" icon="check-circle" onClick={this.onAcceptButtonPress}>Accept</Button>
+                                :
+                                <div className="post-admin" align="right">
+                                    <Button type="primary" shape="round" icon="edit" onClick={this.onEditButtonPress}>Edit</Button>
+                                    <Button type="danger" shape="round" icon="delete" onClick={this.showConfirmDelete}>Delete</Button>
+                                </div> 
+                            }
                         </div> : null }
                     </div>
+                    {post.accepted ? null :
+                    <div>
+                        <Alert message="Not accepted" type="info" />
+                    </div> }
                     <div className="post-title">
                         {post.title}
                     </div>
@@ -178,7 +202,7 @@ class Post extends Component {
                 </div>
                 { feed ?
                 <div align="right">
-                    <Link to={`/posts/${post.id}`} className="btn btn-primary">
+                    <Link to={`/post/${post.id}`} className="btn btn-primary">
                         Read More
                     </Link>
                 </div>

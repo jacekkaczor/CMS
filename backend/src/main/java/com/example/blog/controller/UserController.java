@@ -1,6 +1,7 @@
 package com.example.blog.controller;
 
 import com.example.blog.exception.ResourceNotFoundException;
+import com.example.blog.model.RoleName;
 import com.example.blog.model.User;
 import com.example.blog.payload.*;
 import com.example.blog.repository.PostRepository;
@@ -29,7 +30,12 @@ public class UserController {
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
+        var ordinal = new Object() { boolean admin = false; };
+        currentUser.getAuthorities().forEach(role -> {
+            if (role.getAuthority() == RoleName.ROLE_ADMIN.toString())
+                ordinal.admin = true;
+        });
+        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName(), ordinal.admin);
         return userSummary;
     }
 

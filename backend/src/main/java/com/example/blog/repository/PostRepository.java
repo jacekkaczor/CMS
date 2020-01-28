@@ -13,9 +13,15 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findById(Long postId);
 
+    Page<Post> findByAcceptedTrue(Pageable pageable);
+
+    Page<Post> findByAcceptedFalse(Pageable pageable);
+
+    Page<Post> findByCreatedByAndAcceptedTrue(Long userId, Pageable pageable);
+
     Page<Post> findByCreatedBy(Long userId, Pageable pageable);
 
-    Page<Post> findByTitleContaining(String search, Pageable pageable);
+    Page<Post> findByTitleContainingAndAcceptedTrue(String search, Pageable pageable);
 
     long countByCreatedBy(Long userId);
 

@@ -22,6 +22,8 @@ public class Post extends UserDateAudit {
     @Column(length = 5000)
     private String body;
 
+    private boolean accepted;
+
     public Long getId() {
         return id;
     }
@@ -44,5 +46,13 @@ public class Post extends UserDateAudit {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 }

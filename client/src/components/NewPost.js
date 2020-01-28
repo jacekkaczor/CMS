@@ -43,7 +43,7 @@ class NewPost extends Component {
         if (this._edit) {
             updatePost(postData)
             .then(response => {
-                this.props.history.push("/posts/"+response.id);
+                this.props.history.push("/post/"+response.id);
                 notification.success({
                     message: APP_NAME,
                     description: "Post has been successfully edited",
@@ -61,7 +61,7 @@ class NewPost extends Component {
         } else {
             createPost(postData)
             .then(response => {
-                this.props.history.push("/posts/"+response.id);
+                this.props.history.push("/post/"+response.id);
                 notification.success({
                     message: APP_NAME,
                     description: "Your post has been successfully added",

@@ -53,7 +53,7 @@ public class UserProfile {
         return postCount;
     }
 
-    public void setPollCount(Long postCount) {
+    public void setPostCount(Long postCount) {
         this.postCount = postCount;
     }
 }

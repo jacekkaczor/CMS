@@ -5,7 +5,6 @@ import com.example.blog.payload.*;
 import com.example.blog.service.PostService;
 import com.example.blog.util.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,14 @@ public class PostController {
     public PagedResponse<PostResponse> getPosts(@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                 @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size, 
                                                 @RequestParam(value = "search",  defaultValue = "") String search) {
-        return postService.getAllPosts(page, size, search);
+        return postService.getAllPosts(page, size, search, true);
+    }
+
+    @GetMapping("/toAccept")
+    @PreAuthorize("hasRole('ADMIN')")
+    public PagedResponse<PostResponse> getPostsAcceptedFalse(@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+                                                @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
+        return postService.getAllPosts(page, size, "", false);
     }
 
     @PostMapping
@@ -66,5 +72,18 @@ public class PostController {
 
         return ResponseEntity.created(location)
                 .body(new ApiResponse(true, "Post Updated Successfully", post.getId()));
+    }
+
+    @PutMapping("/accept")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> acceptPost(@Valid @RequestBody long postId) {
+        Post post = postService.acceptPost(postId);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{postId}")
+                .buildAndExpand(post.getId()).toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiResponse(true, "Post Accepted Successfully", post.getId()));
     }
 }

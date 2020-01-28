@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { login } from '../util/APIUtils';
 import { ACCESS_TOKEN } from '../constants';
 import { APP_NAME } from '../constants';
+import { Link } from 'react-router-dom';
 
 import { Form, Input, Button, Icon, notification } from 'antd';
 const FormItem = Form.Item;
@@ -67,6 +68,7 @@ class LoginForm extends Component {
                 </FormItem>
                 <FormItem>
                     <Button type="primary" htmlType="submit" size="large" className="login-form-button">Login</Button>
+                    Or <Link to="/signup">register now!</Link>
                 </FormItem>
             </Form>
         );

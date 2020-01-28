@@ -7,7 +7,7 @@ const initialState = {
     post: null,
     posts: [],
     page: 0,
-    size: 10,
+    size: 5,
     totalElements: 0,
     totalPages: 0,
     last: true,

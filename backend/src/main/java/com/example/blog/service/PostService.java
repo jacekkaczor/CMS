@@ -32,17 +32,20 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
-    public PagedResponse<PostResponse> getAllPosts(int page, int size, String search) {
+    public PagedResponse<PostResponse> getAllPosts(int page, int size, String search, boolean accepted) {
         validatePageNumberAndSize(page, size);
 
         // Retrieve Posts
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
         Page<Post> posts;
-        if(search != "") {
-            posts = postRepository.findByTitleContaining(search, pageable);
-        } else {
-            posts = postRepository.findAll(pageable);
-        }
+        if (accepted)
+            if(search != "") {
+                posts = postRepository.findByTitleContainingAndAcceptedTrue(search, pageable);
+            } else {
+                posts = postRepository.findByAcceptedTrue(pageable);
+            }
+        else
+            posts = postRepository.findByAcceptedFalse(pageable);
 
         if(posts.getNumberOfElements() == 0) {
             return new PagedResponse<>(Collections.emptyList(), posts.getNumber(),
@@ -69,7 +72,12 @@ public class PostService {
 
         // Retrieve all posts created by the given username
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Post> posts = postRepository.findByCreatedBy(user.getId(), pageable);
+        Page<Post> posts;
+        if (currentUser.getUsername().equals(username)) {
+            posts = postRepository.findByCreatedBy(user.getId(), pageable);
+        } else {
+            posts = postRepository.findByCreatedByAndAcceptedTrue(user.getId(), pageable);
+        }
 
         if (posts.getNumberOfElements() == 0) {
             return new PagedResponse<>(Collections.emptyList(), posts.getNumber(),
@@ -89,6 +97,7 @@ public class PostService {
         Post post = new Post();
         post.setTitle(postRequest.getTitle());
         post.setBody(postRequest.getBody());
+        post.setAccepted(false);
         
         return postRepository.save(post);
     }
@@ -99,6 +108,13 @@ public class PostService {
         post.setTitle(postRequest.getTitle());
         post.setBody(postRequest.getBody());
         
+        return postRepository.save(post);
+    }
+
+    public Post acceptPost(long id) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Post", "id", id));
+        post.setAccepted(true);        
         return postRepository.save(post);
     }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Menu, Dropdown, Icon } from 'antd';
 
 export default function ProfileDropdownMenu(props) {
@@ -12,6 +13,12 @@ export default function ProfileDropdownMenu(props) {
                     @{props.user.username}
                 </div>
             </Menu.Item>
+            <Menu.Item key="profile" className="dropdown-item">
+                <Link to={`/users/${props.user.username}`}>Profile</Link>
+            </Menu.Item>
+            {props.user.admin ? <Menu.Item key="waiting" className="dropdown-item">
+                <Link to={"/waitingPosts"}>Waiting Posts</Link>
+            </Menu.Item> : null }
             <Menu.Divider />
             <Menu.Item key="logout" className="dropdown-item">
                 Logout

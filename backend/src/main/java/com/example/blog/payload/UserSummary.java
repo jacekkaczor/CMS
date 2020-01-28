@@ -4,11 +4,19 @@ public class UserSummary {
     private Long id;
     private String username;
     private String name;
+    private Boolean admin;
 
     public UserSummary(Long id, String username, String name) {
         this.id = id;
         this.username = username;
         this.name = name;
+    }
+
+    public UserSummary(Long id, String username, String name, Boolean admin) {
+        this.id = id;
+        this.username = username;
+        this.name = name;
+        this.admin = admin;
     }
 
     public Long getId() {
@@ -33,5 +41,13 @@ public class UserSummary {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
     }
 }
